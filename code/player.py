@@ -13,15 +13,11 @@ class Player(Entity):
         # graphics setup
         self.import_player_assets()
         self.status = 'down'
-        # self.frame_index = 0
-        # self.animation_speed = 0.15
 
         # movement
-        # self.direction = pygame.math.Vector2()
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
-
 
         self.obstacle_sprites = obstacle_sprites
 
@@ -44,10 +40,13 @@ class Player(Entity):
 
         # stats
         self.stats = {'health': 100, 'energy': 60,'attack': 10, 'magic': 4, 'speed': 5}
+        self.max_stats = {'health': 300, 'energy': 140,'attack': 20, 'magic': 10, 'speed': 10}
+        self.upgrade_cost = {'health': 100, 'energy': 100,'attack': 100, 'magic': 100, 'speed': 100}
         self.health = self.stats['health']
         self.energy = self.stats['energy']
-        self.exp = 0
+        self.exp = 500 #debug set to 500
         self.speed = self.stats['speed']
+
 
         # damage timer
         self.vulnerable = True
