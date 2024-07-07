@@ -144,33 +144,6 @@ class Player(Entity):
             if 'attack' in self.status:
                 self.status = self.status.replace('_attack','')
 
-#    def move(self,speed):
-        # if self.direction.magnitude() != 0:
-        #     self.direction = self.direction.normalize()
-        
-        # self.hitbox.x += self.direction.x * speed
-        # self.collision('horizontal')
-        # self.hitbox.y += self.direction.y * speed
-        # self.collision('vertical')
-        # self.rect.center = self.hitbox.center
-        
-#    def collision(self,direction):
-        # if direction == 'horizontal':
-        #     for sprite in self.obstacle_sprites:
-        #         if sprite.hitbox.colliderect(self.hitbox):
-        #             if self.direction.x > 0: #right move
-        #                 self.hitbox.right = sprite.hitbox.left
-        #             if self.direction.x < 0: #left move
-        #                 self.hitbox.left = sprite.hitbox.right
-
-        # if direction == 'vertical':
-        #     for sprite in self.obstacle_sprites:
-        #         if sprite.hitbox.colliderect(self.hitbox):
-        #             if self.direction.y > 0: #down move
-        #                 self.hitbox.bottom = sprite.hitbox.top
-        #             if self.direction.y < 0: #up move
-        #                 self.hitbox.top = sprite.hitbox.bottom
-
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
         if self.attacking:
@@ -213,6 +186,17 @@ class Player(Entity):
         base_damage = self.stats['attack']
         weapon_damage = weapon_data[self.weapon]['damage']
         return base_damage + weapon_damage
+    
+    def get_full_magic_damage(self):
+        base_damage = self.stats['magic']
+        spell_damage = magic_data[self.magic]['strength']
+        return base_damage + spell_damage
+
+    def energy_recovery(self):
+        if self.energy < self.stats['energy']:
+            self.energy += 0.01 * self.stats['magic']
+        else:
+            self.energy = self.stats['energy']
 
     def update(self):
         self.input()
@@ -220,3 +204,4 @@ class Player(Entity):
         self.get_status()
         self.animate()
         self.move(self.speed)
+        self.energy_recovery()
