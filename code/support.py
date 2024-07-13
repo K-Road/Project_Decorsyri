@@ -33,7 +33,8 @@ def import_folder(path):
 def resource_path(relative_path):
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
+       # base_path = sys._MEIPASS
+       base_path = getattr(sys, 'MEIPASS',os.path.dirname(os.path.abspath(__file__)))
     except Exception:
         base_path = os.path.abspath(".")
 
