@@ -2,28 +2,38 @@ import glob
 import os
 import sys
 
-def find_files(pattern):
-    """ Recursively find all files matching the pattern. """
-    return glob.glob(pattern, recursive=True)
+block_cipher = None
 
-def generate_data_files():
-    added_files = [
-        ('README.md', '.'),
-        ('graphics/**/*.png', 'graphics/*'),
-        ('graphics/font/**/*.ttf', '.'),
-        ('map/**/*.csv', '.'),
-        ('audio/**/*.wav', '.')
-    ]
+def find_files(base_dir, pattern):
+    """ Recursively find all files matching the pattern in the base_dir. """
+    files = []
+    for file in glob.glob(os.path.join(base_dir, pattern), recursive=True):
+        if os.path.isfile(file):
+            # Create tuple (source, destination)
+            rel_path = os.path.relpath(file, base_dir)
+            dest_dir = os.path.dirname(rel_path)
+            
+            # Append tuple (source, destination directory)
+            files.append((file, dest_dir))
+    return files
 
-    data_files = []
+# Base directory of your project
+base_dir = os.path.abspath('.')
 
-    for source_pattern, destination in added_files:
-        for file_path in find_files(source_pattern):
-            if os.path.isfile(file_path):  # Only add files, not directories
-                # Create a tuple with the full source path and destination directory
-                data_files.append((os.path.abspath(file_path), os.path.join(destination, os.path.basename(file_path))))
+# Patterns to include
+patterns = [
+    'graphics/**/*.png',
+    'graphics/font/*.ttf',
+    'map/*.csv',
+    'audio/**/*.wav',
+    'audio/*'
+]
 
-    return data_files
+# Generate the datas list
+datas = []
+for pattern in patterns:
+    datas.extend(find_files(base_dir, pattern))
+
 
 # Get the path to the bundled resources
 def resource_path(relative_path):
@@ -36,5 +46,5 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 if __name__ == "__main__":
-    data_files = generate_data_files()
+    data_files = datas
     print(data_files)

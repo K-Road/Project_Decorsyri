@@ -1,2 +1,5 @@
 # Ignore Python compiled files
 __pycache__/
+build/
+dist/
+main.spec

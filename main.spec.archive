@@ -1,0 +1,73 @@
+# -*- mode: python ; coding: utf-8 -*-
+
+import glob
+import os
+import sys
+
+block_cipher = None
+
+def find_files(base_dir, pattern):
+    """ Recursively find all files matching the pattern in the base_dir. """
+    files = []
+    for file in glob.glob(os.path.join(base_dir, pattern), recursive=True):
+        if os.path.isfile(file):
+            # Create tuple (source, destination)
+            rel_path = os.path.relpath(file, base_dir)
+            dest_dir = os.path.dirname(rel_path)
+            
+            # Append tuple (source, destination directory)
+            files.append((file, dest_dir))
+    return files
+
+# Base directory of your project
+base_dir = os.path.abspath('.')
+
+# Patterns to include
+patterns = [
+    'graphics/**/*.png',
+    'graphics/font/**/*.ttf',
+    'map/*.csv',
+    'audio/**/*.wav'
+]
+
+# Generate the datas list
+datas = []
+for pattern in patterns:
+    datas.extend(find_files(base_dir, pattern))
+
+
+a = Analysis(
+    ['code/main.py'],
+    pathex=['.'],
+    binaries=[],
+    datas=datas,
+    hiddenimports=[],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
+)
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.datas,
+    [],
+    name='main',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
+    console=True,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)

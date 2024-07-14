@@ -40,16 +40,48 @@ class Level:
         self.magic_player = MagicPlayer(self.animiation_player)
 
     def create_map(self):
+        file_path = resource_path('map/map_FloorBlocks.csv')
+        # if os.path.exists(file_path):
+        #     print(f"File '{file_path}' exists.")
+        #     if os.path.isdir(file_path):
+        #         print(f"Dir")
+        #         contents = os.listdir(file_path)
+    
+        #         # Print each item in the directory
+        #         for item in contents:
+        #             print(item)
+                        
+        #         if os.path.exists(f"{file_path}/map_FloorBlocks.csv"):
+        #             print(f"'{file_path}' exists.")
+
+        #             file_path = file_path + '/map_FloorBlocks.csv'
+        #             if os.path.isdir(file_path):
+        #                 print(f"Dir")
+        #                 if os.path.exists(f"{file_path}/map_FloorBlocks.csv"):
+        #                     file_path = file_path + '/map_FloorBlocks.csv'
+        #                     print(f"File '{file_path}' exists. 333")
+        #                     if os.path.isdir(file_path):
+        #                         print(f"Dir")
+        #                     else:
+        #                         print(f"File 444")
+        #             if os.path.isfile(file_path):
+        #                 print(f"File {file_path} 555")
+        #         else:
+        #             print(f"{file_path}/map doesnt")
+                    
+        # else:
+        #     print(f"File '{file_path}' does not exist.")
         layouts = {
-            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
-            'grass':  import_csv_layout('../map/map_Grass.csv'),
-            'object': import_csv_layout('../map/map_Objects.csv'),
-            'entities': import_csv_layout('../map/map_Entities.csv')
+           # 'boundary': import_csv_layout(resource_path(file_path)),   ##fix pathing
+            'boundary': import_csv_layout(resource_path('map/map_FloorBlocks.csv')),   ##fix pathing
+            'grass':  import_csv_layout(resource_path('map/map_Grass.csv')),
+            'object': import_csv_layout(resource_path('map/map_Objects.csv')),
+            'entities': import_csv_layout(resource_path('map/map_Entities.csv'))
         }
 
         graphics = {
-            'grass': import_folder('../graphics/grass'),
-            'objects': import_folder('../graphics/objects'),
+            'grass': import_folder('graphics/grass'),
+            'objects': import_folder('graphics/objects'),
         }
         for style,layout in layouts.items():
             for row_index,row in enumerate(layout):
@@ -169,11 +201,37 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         #map
-        path1 = '../graphics/tilemap/ground.png'
-        path2 = resource_path('../graphics/tilemap/ground.png')
-        print(f"Loaded image: {path1}")
-        print(f"Loaded image: {path2}")
-        self.floor_surface = pygame.image.load(path2).convert()
+       # path1 = '../graphics/tilemap/ground.png'
+      #  if os.path.dirname('graphics/tilemap/ground.png') == 'code':
+      #      print(os.path.dirname('graphics/tilemap/ground.png'))
+      #  print(os.path.dirname('graphics/tilemap/ground.png'))
+        path = resource_path('graphics/tilemap/ground.png')
+      #  print(f"Loaded image: {path1}")
+        # print(f"Loaded image: {path2}")
+
+
+        
+        # file_path = path2
+
+        # # Check if the file exists
+        # if os.path.exists(file_path):
+        #     print(f"File '{file_path}' exists.")
+        # else:
+        #     print(f"File '{file_path}' does not exist.")
+
+        # Try loading the image
+        # try:
+        #     self.floor_surface = pygame.image.load(path).convert()
+        #     print("Image loaded successfully")
+        # except pygame.error as e:
+        #     print(f"Error loading image: {e}")
+        #     print(path)
+        #     self.floor_surface = pygame.image.load('graphics/tilemap/ground.png').convert()
+        # except FileNotFoundError as e:
+        #     print(f"File not found: {e}")
+        #     self.floor_surface = pygame.image.load('graphics/tilemap/ground.png').convert()
+        
+        self.floor_surface = pygame.image.load(path).convert()
         self.floor_rect = self.floor_surface.get_rect(topleft = (0,0))
 
     def custom_draw(self,player):
@@ -185,7 +243,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         floor_offset_pos = self.floor_rect.topleft - self.offset
         self.display_surface.blit(self.floor_surface,floor_offset_pos)
 
-        #for sprite in self.s()prites():
+        #for sprite in self.sprites():
         for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image,offset_pos)
